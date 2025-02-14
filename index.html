@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Fibriana</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #ff99cc, #ff66b2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .overlay-text {
+            position: fixed;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 42px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+            background: rgba(255, 105, 180, 0.8);
+            padding: 20px 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 30px solid rgba(255, 255, 255, 0.7);
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+        .confetti {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            animation: explode 1.2s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes explode {
+            0% { transform: scale(0) translate(0, 0); opacity: 1; }
+            100% { transform: scale(1) translate(var(--x), var(--y)); opacity: 0; }
+        }
+        .side-confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: side-fall 1.5s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes side-fall {
+            0% { opacity: 1; transform: translateY(-10vh) scale(1); }
+            100% { opacity: 0; transform: translateY(100vh) scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay-text">🎉 Happy Birthday Fibriana! 🎂🥳</div>
+    <div class="frame"></div>
+    
+    <a-scene embedded arjs>
+        <!-- Kamera & Lingkungan -->
+        <a-marker-camera preset="hiro"></a-marker-camera>
+
+        <!-- Kue Ulang Tahun -->
+        <a-entity position="0 0 -3">
+            <a-cylinder color="#ff66b2" radius="0.9" height="0.5"></a-cylinder>
+            <a-cylinder color="#fff" radius="0.85" height="0.05" position="0 0.25 0"></a-cylinder>
+            <a-cylinder color="#ffcc00" radius="0.8" height="0.05" position="0 0.3 0"></a-cylinder>
+            <a-cylinder color="#fff" radius="0.75" height="0.05" position="0 0.35 0"></a-cylinder>
+        </a-entity>
+
+        <!-- Lilin -->
+        <a-cylinder color="#ffcc00" radius="0.1" height="0.7" position="0 0.6 -3"></a-cylinder>
+        
+        <!-- Api Lilin Realistik -->
+        <a-entity id="flame" geometry="primitive: cone; radius-bottom: 0.15; radius-top: 0; height: 0.4" 
+            material="shader: standard; emissive: orange; emissiveIntensity: 1" position="0 1 -3" 
+            animation="property: scale; from: 1 1 1; to: 1.2 1.5 1.2; dir: alternate; dur: 300; loop: true">
+        </a-entity>
+    </a-scene>
+
+    <script>
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) { // Tambahkan lebih banyak konfeti tengah
+                let confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.backgroundColor = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"][Math.floor(Math.random() * 6)];
+                confetti.style.left = "50vw";
+                confetti.style.top = "50vh";
+                confetti.style.width = Math.random() * 20 + 10 + "px"; 
+                confetti.style.height = confetti.style.width;
+                confetti.style.setProperty('--x', (Math.random() * 200 - 100) + "vw");
+                confetti.style.setProperty('--y', (Math.random() * 200 - 100) + "vh");
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 1200);
+            }
+
+            for (let i = 0; i < 50; i++) { // Tambahkan lebih banyak konfeti samping
+                let sideConfetti = document.createElement("div");
+                sideConfetti.className = "side-confetti";
+                sideConfetti.style.backgroundColor = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"][Math.floor(Math.random() * 6)];
+                sideConfetti.style.width = Math.random() * 15 + 5 + "px";
+                sideConfetti.style.height = sideConfetti.style.width;
+                sideConfetti.style.left = Math.random() < 0.5 ? "2%" : "98%"; // Samping kiri atau kanan
+                sideConfetti.style.top = Math.random() * 100 + "vh";
+                document.body.appendChild(sideConfetti);
+                setTimeout(() => sideConfetti.remove(), 1500);
+            }
+        }
+
+        document.body.addEventListener('click', function() {
+            let flame = document.getElementById('flame');
+            if (flame) flame.setAttribute('visible', 'false');
+            
+            // Suara terompet ulang tahun
+            let audio = new Audio('https://www.myinstants.com/media/sounds/party-horn.mp3'); 
+            audio.play();
+            
+            // Efek ledakan konfeti
+            createConfetti();
+        });
+    </script>
+</body>
+</html>
